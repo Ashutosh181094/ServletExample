@@ -1,0 +1,153 @@
+import java.sql.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+
+public class GUI_DB extends JFrame implements ActionListener
+{
+JLabel l1,l2,l3,l4;
+JTextField tf1,tf2,tf3,tf4;
+JButton b1,b2,b3;
+Connection con=null;
+public GUI_DB()
+{
+	setTitle("Registration Page");
+	setLayout(null);
+	l1=new JLabel("ROLL :");
+	l2=new JLabel("Name :");
+	l3=new JLabel("CGPA :");
+	l4=new JLabel("Register here");
+	tf1=new JTextField();
+	tf2=new JTextField();
+	tf3=new JTextField();
+	b1=new JButton("Insert");
+	b2=new JButton("Update");
+	b3=new JButton("Delete");
+	add(l1);
+	add(l2);
+	add(l3);
+	add(l4);
+	
+	add(tf1);
+	add(tf2);
+	add(tf3);
+	
+	add(b1);
+	add(b2);
+	add(b3);
+	l4.setBounds(120,15,300,30);
+	l4.setFont(new Font("verdana",Font.BOLD,20));
+	l4.setForeground(Color.red);
+	l1.setBounds(50,15,100,30);
+	l2.setBounds(50,90,100,30);
+	l3.setBounds(50,130,100,30);
+	tf1.setBounds(160,50,190,30);
+	tf2.setBounds(160,90,190,30);
+	tf3.setBounds(160,130,100,30);
+	b1.setBounds(50,170,90,30);
+	b2.setBounds(155,170,90,30);
+	b3.setBounds(260,170,90,30);
+	setSize(400,400);
+	setLocation(200,100);
+	setVisible(true);
+	setTitle("Registration page");
+	setLayout(null);
+	try
+	{
+		
+		Class.forName("oracle.jdbc.OracleDriver");
+		con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","ashu1234");
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+	b1.addActionListener(this);
+	b2.addActionListener(this);
+	b3.addActionListener(this);
+	
+	
+	
+}
+public static void main(String args[])
+{
+	new GUI_DB();
+}
+@Override
+public void actionPerformed(ActionEvent ae) 
+{
+	
+	try
+	{
+		if(ae.getSource()==b1)
+		{
+			int roll=Integer.parseInt(tf1.getText());
+			String name=tf2.getText();
+			double cgpa=Double.parseDouble(tf3.getText());
+			
+			String sql="Insert into student values(?,?,?)";
+			PreparedStatement pst=con.prepareStatement(sql);
+			pst.setInt(1, roll);
+			pst.setString(2,name);
+			pst.setDouble(3, cgpa);
+			int status=pst.executeUpdate();
+			if(status>0)
+			{
+				JOptionPane.showMessageDialog(null,"Record Inserted successfully");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,"Error in Insertion....");
+			}
+			}
+		if(ae.getSource()==b2)
+		{
+			int roll=Integer.parseInt(tf1.getText());
+			String name=tf2.getText();
+			double cgpa=Double.parseDouble(tf3.getText());
+			
+			String sql="update student set name=?,cgpa=? where roll=?";
+			PreparedStatement pst=con.prepareStatement(sql);
+			pst.setString(1, name);
+			pst.setDouble(2,cgpa);
+			pst.setInt(3, roll);
+			int status=pst.executeUpdate();
+			if(status>0)
+			{
+				JOptionPane.showMessageDialog(null,"Record Updated successfully");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,"Error in Updation....");
+			}
+			}
+		if(ae.getSource()==b3)
+		{
+			int roll=Integer.parseInt(tf1.getText());
+			String name=tf2.getText();
+			double cgpa=Double.parseDouble(tf3.getText());
+			
+			String sql="delete from student where roll=?";
+			PreparedStatement pst=con.prepareStatement(sql);
+			pst.setInt(1, roll);
+			
+			int status=pst.executeUpdate();
+			if(status>0)
+			{
+				JOptionPane.showMessageDialog(null,"Record Deleted successfully");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,"Error in Deletion....");
+			}
+			}
+		
+	}
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+}
+
+}
